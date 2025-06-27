@@ -1,11 +1,10 @@
 pandas
+numpy
+matplotlib
 
- numpy
-
- matplotlib
-
- seaborn 
+seaborn 
 
 scikit-learn
 
- streamlit
+streamlit
+kaggle
