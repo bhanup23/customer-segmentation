@@ -43,8 +43,10 @@ def load_data():
     if not os.path.exists(dataset_path):
         st.warning("Dataset not found locally. Attempting to download from Kaggle...")
         try:
-            kaggle.api.authenticate()
-            kaggle.api.dataset_download_files(
+            from kaggle.api.kaggle_api_extended import KaggleApi  # ✅ import here
+            api = KaggleApi()
+            api.authenticate()
+            api.dataset_download_files(
                 'vjchoudhary7/customer-segmentation-tutorial-in-python',
                 path='.',
                 unzip=True
