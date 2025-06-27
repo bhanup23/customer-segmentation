@@ -1,19 +1,23 @@
 import os
 import streamlit as st
 
-# Write kaggle.json to expected location
+# Step 1: Create the ~/.kaggle folder
 os.makedirs(os.path.expanduser("~/.kaggle"), exist_ok=True)
 
+# Step 2: Write the kaggle.json file from Streamlit secrets
 with open(os.path.expanduser("~/.kaggle/kaggle.json"), "w") as f:
-    f.write(f'''{{
-        "username": "{st.secrets["kaggle"]["username"]}",
-        "key": "{st.secrets["kaggle"]["key"]}"
-    }}''')
+    f.write('{"username":"%s","key":"%s"}' % (
+        st.secrets["kaggle"]["username"],
+        st.secrets["kaggle"]["key"]
+    ))
 
+# Step 3: Set correct permissions
 os.chmod(os.path.expanduser("~/.kaggle/kaggle.json"), 0o600)
 
-# Now you can safely import kaggle
+# Step 4: Now safely import kaggle (after credentials exist)
 import kaggle
+
+
 
 import pandas as pd
 import numpy as np
@@ -24,7 +28,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score
 import streamlit as st
 import os
-import kaggle
+
 
 # Load or download dataset
 @st.cache_data
