@@ -1,3 +1,20 @@
+import os
+import streamlit as st
+
+# Write kaggle.json to expected location
+os.makedirs(os.path.expanduser("~/.kaggle"), exist_ok=True)
+
+with open(os.path.expanduser("~/.kaggle/kaggle.json"), "w") as f:
+    f.write(f'''{{
+        "username": "{st.secrets["kaggle"]["username"]}",
+        "key": "{st.secrets["kaggle"]["key"]}"
+    }}''')
+
+os.chmod(os.path.expanduser("~/.kaggle/kaggle.json"), 0o600)
+
+# Now you can safely import kaggle
+import kaggle
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
