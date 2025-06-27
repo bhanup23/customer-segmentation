@@ -6,27 +6,40 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import silhouette_score
 import streamlit as st
+import os
+import kaggle
 
-# Load dataset
+# Load or download dataset
 @st.cache_data
 def load_data():
-    df = pd.read_csv('Mall_Customers.csv')
+    dataset_path = 'Mall_Customers.csv'
+    if not os.path.exists(dataset_path):
+        st.warning("Dataset not found locally. Attempting to download from Kaggle...")
+        try:
+            kaggle.api.authenticate()
+            kaggle.api.dataset_download_files('vjchoudhary7/customer-segmentation-tutorial-in-python', path='.', unzip=True)
+            st.success("Dataset downloaded successfully!")
+        except Exception as e:
+            st.error(f"Failed to download dataset from Kaggle: {e}. Please upload Mall_Customers.csv manually.")
+            return None
+    df = pd.read_csv(dataset_path)
     df = df.rename(columns={'Annual Income (k$)': 'Annual_Income', 'Spending Score (1-100)': 'Spending_Score'})
     return df
 
 # Preprocess data
 def preprocess_data(df):
-    # Select relevant features
+    if df is None:
+        st.error("No data available for preprocessing.")
+        return None, None
     X = df[['Annual_Income', 'Spending_Score']]
-    
-    # Scale features
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
-    
     return X_scaled, scaler
 
 # Apply K-means clustering
 def apply_clustering(X_scaled, n_clusters=5):
+    if X_scaled is None:
+        return None, None, None
     kmeans = KMeans(n_clusters=n_clusters, random_state=42)
     clusters = kmeans.fit_predict(X_scaled)
     silhouette_avg = silhouette_score(X_scaled, clusters)
@@ -34,6 +47,8 @@ def apply_clustering(X_scaled, n_clusters=5):
 
 # Visualize clusters
 def plot_clusters(X, clusters, silhouette_avg):
+    if X is None or clusters is None:
+        return
     plt.figure(figsize=(8, 6))
     sns.scatterplot(x=X[:, 0], y=X[:, 1], hue=clusters, palette='deep', s=100)
     plt.title(f'Customer Segments (Silhouette Score: {silhouette_avg:.2f})')
@@ -50,10 +65,14 @@ def main():
 
     # Load and preprocess data
     df = load_data()
+    if df is None:
+        st.stop()
     X_scaled, scaler = preprocess_data(df)
     
     # Apply clustering
     clusters, kmeans, silhouette_avg = apply_clustering(X_scaled)
+    if clusters is None:
+        st.stop()
     plot_clusters(X_scaled, clusters, silhouette_avg)
     
     # Sidebar for cluster selection
