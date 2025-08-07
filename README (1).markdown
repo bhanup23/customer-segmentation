@@ -29,7 +29,7 @@ kaggle
 
 Setup Instructions
 
-Clone the repository:git clone https://github.com/yourusername/customer-segmentation.git
+Clone the repository:git clone https://github.com/bhanup23/customer-segmentation
 cd customer-segmentation
 
 
@@ -56,7 +56,7 @@ Upload kaggle.json to the Streamlit Cloud secrets manager (under "Secrets" in th
 Set customer_segmentation.py as the main script and include requirements.txt.
 
 
-Live Demo: (Add your URL, e.g., https://customer-segmentation-mjw9uy2zkaeuzat3odxhej.streamlit.app).
+Live Demo: (https://customer-segmentation-mjw9uy2zkaeuzat3odxhej.streamlit.app).
 
 Project Structure
 
@@ -80,8 +80,7 @@ Integrate real-time customer data.
 Author
 
 Bhanu Pratap
-GitHub: yourusername
-Email: bhanu2208@iitk.ac.in
 
-License
-MIT License
+
+
+
